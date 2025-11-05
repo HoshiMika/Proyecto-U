@@ -3,13 +3,13 @@ const ChatbotFunctionality = document.createElement("div");
 
 ChatbotFunctionality.innerHTML = `
 <!-- Chatbot IA Completo -->
-<div class="chatbot-ia">
+<div class="chatbot-ia" style="display: none;">
     <div class="chatbot-header">
         <div class="chatbot-avatar">
             <i class="fas fa-robot"></i>
         </div>
         <div class="chatbot-info">
-            <h4>Asistente IA Gemini</h4>
+            <h4>Asistente IA SoqualST</h4>
             <p>Conectado</p>
         </div>
         <button class="chatbot-close">
@@ -18,7 +18,7 @@ ChatbotFunctionality.innerHTML = `
     </div>
     
     <div class="chatbot-message">
-        <p>¡Hola! Soy Gemini AI 🤖</p>
+        <p>¡Hola! Soy SoqualST AI 🤖</p>
         <p>Estoy aquí para ayudarte con cualquier pregunta que tengas.</p>
     </div>
     
@@ -35,18 +35,22 @@ ChatbotFunctionality.innerHTML = `
     
     <div class="chatbot-status" id="chatbotStatus">
         <i class="fas fa-circle" style="color: #28a745; font-size: 8px;"></i>
-        <span>Conectado a Gemini</span>
+        <span>Conectado a SoqualST</span>
     </div>
 </div>
+
+<!-- Botón trigger flotante -->
+<button id="chatbotTrigger" class="chatbot-trigger">
+    <i class="fas fa-robot"></i>
+</button>
 `;
 
 // Agregar la interfaz del chatbot al cuerpo
 document.body.appendChild(ChatbotFunctionality);
 
-// Funcionalidad del chatbot con la librería oficial de Google
-document.addEventListener('DOMContentLoaded', async function() {
-    // Importar la librería oficial de Google
-    const { GoogleGenerativeAI } = await import("https://esm.run/@google/generative-ai");
+// Funcionalidad del chatbot usando fetch directo a la API
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing chatbot with SoqualST...');
     
     const chatbotTrigger = document.getElementById('chatbotTrigger');
     const chatbot = document.querySelector('.chatbot-ia');
@@ -57,49 +61,48 @@ document.addEventListener('DOMContentLoaded', async function() {
     const chatbotStatus = document.getElementById('chatbotStatus');
     
     let conversationHistory = [];
-    let genAI;
-    let model;
     
-    // Inicializar Gemini AI
-    function initializeGemini() {
-        try {
-            if (typeof GEMINI_CONFIG === 'undefined' || GEMINI_CONFIG.API_KEY === 'TU_API_KEY_AQUI') {
-                showStatus('⚠️ Configura tu API Key', 'warning');
-                return false;
-            }
-            
-            genAI = new GoogleGenerativeAI(GEMINI_CONFIG.API_KEY);
-            model = genAI.getGenerativeModel({ 
-                model: "gemini-2.0-flash-exp",
-                generationConfig: GEMINI_CONFIG.CONFIG.generationConfig
-            });
-            
-            showStatus('Conectado a Gemini', 'success');
-            return true;
-        } catch (error) {
-            console.error('Error al inicializar Gemini:', error);
-            showStatus('Error de conexión', 'error');
+    // Configuración con modelos ACTUALES basado en tu diagnóstico
+    const API_KEY = window.GEMINI_CONFIG?.API_KEY;
+    const API_URL = 'https://generativelanguage.googleapis.com/v1/models/';
+    
+    // Modelos DISPONIBLES según tu diagnóstico - ORDENADOS POR CALIDAD
+    const AVAILABLE_MODELS = [
+        'gemini-2.5-flash',      // Mejor modelo disponible
+        'gemini-2.5-pro',        // Alternativa de alta calidad
+        'gemini-2.0-flash',      // Modelo rápido
+        'gemini-2.0-flash-001'   // Versión estable
+    ];
+    
+    let currentModel = AVAILABLE_MODELS[0];
+    
+    // Verificar configuración
+    function checkConfig() {
+        if (!API_KEY || API_KEY === 'TU_API_KEY_AQUI') {
+            showStatus('⚠️ Configura tu API Key en GeminiConfig.js', 'warning');
+            console.error('API Key no configurada');
             return false;
         }
+        return true;
     }
-    
-    // Inicializar al cargar la página
-    const isInitialized = initializeGemini();
     
     // Abrir chatbot
     chatbotTrigger.addEventListener('click', function() {
-        chatbot.classList.add('active');
+        chatbot.style.display = 'block';
+        setTimeout(() => chatbot.classList.add('active'), 10);
         chatbotInput.focus();
         
-        // Reintentar inicialización si falló antes
-        if (!isInitialized) {
-            initializeGemini();
+        if (!checkConfig()) {
+            addMessage('Por favor, configura tu API Key de Gemini en el archivo GeminiConfig.js', 'ai');
+        } else {
+            showStatus(`Conectado a SoqualST`, 'success');
         }
     });
     
     // Cerrar chatbot
     chatbotClose.addEventListener('click', function() {
         chatbot.classList.remove('active');
+        setTimeout(() => chatbot.style.display = 'none', 300);
     });
     
     // Enviar mensaje al hacer clic en el botón
@@ -114,18 +117,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
     
-    // Función para enviar mensaje
+    // Función para enviar mensaje usando fetch directo
     async function sendMessage() {
         const message = chatbotInput.value.trim();
         
         if (message === '') return;
         
-        // Verificar configuración
-        if (!genAI || !model) {
-            if (!initializeGemini()) {
-                addMessage('Por favor, configura la API Key de Gemini en el archivo GeminiConfig.js', 'ai');
-                return;
-            }
+        if (!checkConfig()) {
+            addMessage('Error: API Key no configurada. Verifica GeminiConfig.js', 'ai');
+            return;
         }
         
         // Deshabilitar input mientras se procesa
@@ -140,24 +140,41 @@ document.addEventListener('DOMContentLoaded', async function() {
         const typingIndicator = showTypingIndicator();
         
         try {
-            // Construir el historial de conversación para el contexto
-            let fullPrompt = buildConversationHistory(message);
+            // Construir el prompt
+            const prompt = buildPrompt(message);
             
-            // Obtener respuesta de Gemini
-            const result = await model.generateContent(fullPrompt);
-            const response = await result.response;
-            const aiResponse = response.text();
+            // Intentar con el modelo actual, si falla probar otros
+            let response = await trySendMessage(prompt, currentModel);
+            
+            if (!response.success) {
+                // Probar otros modelos disponibles
+                showStatus('Probando modelos alternativos...', 'warning');
+                for (const model of AVAILABLE_MODELS) {
+                    if (model !== currentModel) {
+                        console.log(`🔄 Probando modelo alternativo: ${model}`);
+                        response = await trySendMessage(prompt, model);
+                        if (response.success) {
+                            currentModel = model;
+                            console.log(`✅ Modelo cambiado a: ${currentModel}`);
+                            break;
+                        }
+                    }
+                }
+            }
             
             typingIndicator.remove();
-            addMessage(aiResponse, 'ai');
-            showStatus('Conectado a Gemini', 'success');
             
-            // Actualizar historial de conversación
-            updateConversationHistory(message, aiResponse);
+            if (response.success) {
+                addMessage(response.text, 'ai');
+                showStatus(`Conectado a SoqualST`, 'success');
+                updateConversationHistory(message, response.text);
+            } else {
+                throw new Error(response.error || 'Todos los modelos fallaron');
+            }
             
         } catch (error) {
             typingIndicator.remove();
-            console.error('Error con Gemini API:', error);
+            console.error('❌ Error con Gemini API:', error);
             
             let errorMessage = 'Lo siento, hubo un error al procesar tu solicitud. ';
             
@@ -167,12 +184,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             } else if (error.message.includes('429')) {
                 errorMessage += 'Límite de solicitudes excedido. Intenta más tarde.';
                 showStatus('Límite excedido', 'warning');
-            } else if (error.message.includes('BLOCKED')) {
-                errorMessage += 'La solicitud fue bloqueada por políticas de seguridad.';
-                showStatus('Contenido bloqueado', 'warning');
+            } else if (error.message.includes('404')) {
+                errorMessage += 'Modelo no disponible. Contacta al administrador.';
+                showStatus('Error de modelo', 'error');
+            } else if (error.message.includes('Todos los modelos fallaron')) {
+                errorMessage += 'No hay modelos disponibles. Verifica tu configuración.';
+                showStatus('Sin modelos disponibles', 'error');
             } else {
-                errorMessage += 'Por favor, intenta nuevamente.';
-                showStatus('Error de servidor', 'error');
+                errorMessage += 'Error: ' + error.message;
+                showStatus('Error de conexión', 'error');
             }
             
             addMessage(errorMessage, 'ai');
@@ -184,18 +204,70 @@ document.addEventListener('DOMContentLoaded', async function() {
         chatbotInput.focus();
     }
     
-    // Función para construir el historial de conversación
-    function buildConversationHistory(newMessage) {
+    // Función para enviar mensaje a la API
+    async function trySendMessage(prompt, modelName) {
+        try {
+            console.log(`📤 Enviando mensaje a ${modelName}...`);
+            
+            const response = await fetch(`${API_URL}${modelName}:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        topK: 40,
+                        topP: 0.95,
+                        maxOutputTokens: 1000,
+                    }
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.log(`❌ ${modelName}: ${errorData.error?.message || `HTTP ${response.status}`}`);
+                return {
+                    success: false,
+                    error: errorData.error?.message || `HTTP ${response.status}`
+                };
+            }
+            
+            const data = await response.json();
+            const text = data.candidates[0].content.parts[0].text;
+            
+            console.log(`✅ ${modelName}: Respuesta exitosa`);
+            return {
+                success: true,
+                text: text
+            };
+            
+        } catch (error) {
+            console.log(`❌ ${modelName}: ${error.message}`);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+    
+    // Función para construir el prompt
+    function buildPrompt(newMessage) {
         if (conversationHistory.length === 0) {
-            return `Eres un asistente útil y amigable. Responde en español.\n\nUsuario: ${newMessage}`;
+            return `Eres un asistente útil y amigable llamado SoqualST. Responde en español de manera clara y concisa.\n\nUsuario: ${newMessage}\n\nAsistente:`;
         }
         
-        let history = "Esta es la conversación anterior:\n";
+        let history = "Historial de conversación:\n";
         conversationHistory.forEach(entry => {
             history += `${entry.role === 'user' ? 'Usuario' : 'Asistente'}: ${entry.content}\n`;
         });
         
-        history += `\nAhora el usuario dice: ${newMessage}`;
+        history += `\nUsuario: ${newMessage}\n\nAsistente:`;
         return history;
     }
     
@@ -225,7 +297,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
         
-        // Formatear texto con saltos de línea
         const formattedText = text.replace(/\n/g, '<br>');
         messageContent.innerHTML = formattedText;
         
@@ -237,8 +308,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         messageDiv.appendChild(messageTime);
         
         chatbotConversation.appendChild(messageDiv);
-        
-        // Scroll al final
         chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
     }
     
@@ -252,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <span></span>
                 <span></span>
             </div>
-            <p>Gemini está pensando...</p>
+            <p>SoqualST está pensando...</p>
         `;
         chatbotConversation.appendChild(typingIndicator);
         chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
@@ -292,6 +361,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             !chatbot.contains(event.target) && 
             !chatbotTrigger.contains(event.target)) {
             chatbot.classList.remove('active');
+            setTimeout(() => chatbot.style.display = 'none', 300);
         }
     });
+    
+    // Verificar configuración al cargar
+    if (checkConfig()) {
+        showStatus(`Conectado a SoqualST`, 'success');
+        console.log('✅ Chatbot configurado como SoqualST');
+    }
 });
