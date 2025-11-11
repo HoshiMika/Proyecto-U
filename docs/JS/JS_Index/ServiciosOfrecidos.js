@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <div class="service-card">
             <div class="service-img">
-              <img src="/Imagenes/Soporte.avif" alt="Soporte en Computadores">
+              <img src="./Imagenes/Soporte.avif" alt="Soporte en Computadores">
             </div>
             <div class="service-content">
               <div class="service-icon">
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <div class="service-card">
             <div class="service-img">
-              <img src="/Imagenes/SoporteAplicaciones.avif" alt="Soporte en Aplicaciones">
+              <img src="./Imagenes/SoporteAplicaciones.avif" alt="Soporte en Aplicaciones">
             </div>
             <div class="service-content">
               <div class="service-icon">
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <div class="service-card">
             <div class="service-img">
-              <img src="/Imagenes/Desarrollo.avif" alt="Desarrollo Web">
+              <img src="./Imagenes/Desarrollo.avif" alt="Desarrollo Web">
             </div>
             <div class="service-content">
               <div class="service-icon">
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <div class="service-card">
             <div class="service-img">
-              <img src="/Imagenes/CCTV.avif" alt="Cámaras de Seguridad">
+              <img src="./Imagenes/CCTV.avif" alt="Cámaras de Seguridad">
             </div>
             <div class="service-content">
               <div class="service-icon">
