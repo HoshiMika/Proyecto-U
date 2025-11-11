@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="container">
         <div class="logo-container">
           <div class="logo">
-            <img src="../Imagenes/Logo.png" alt="Soqual Logo" class="site-logo">
+            <img src="/Imagenes/Logo.png" alt="Soqual Logo" class="site-logo">
             <div>
               <h1>Soqual <span>Soluciones Tecnológicas</span></h1>
             </div>
