@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="team-grid">
                 <div class="team-member">
                     <div class="team-img">
-                        <img src="/Imagenes/Foto CV.jpg" alt="Juan David Bayona - Fundador & CEO">
+                        <img src="../Imagenes/Foto_CV.jpg" alt="Juan David Bayona - Fundador & CEO">
                     </div>
                     <div class="team-info">
                         <h3 class="team-name">Juan David Bayona Castañeda</h3>
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 <div class="team-member">
                     <div class="team-img">
-                        <img src="/Imagenes/HernanCoba.jpg" alt="Hernan Dario Coba - Gerente de Relaciones Estratégicas">
+                        <img src="../Imagenes/HernanCoba.jpg" alt="Hernan Dario Coba - Gerente de Relaciones Estratégicas">
                     </div>
                     <div class="team-info">
                         <h3 class="team-name">Hernan Dario Coba Alferez</h3>
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 <div class="team-member">
                     <div class="team-img">
-                        <img src="/Imagenes/AndresLopez.jpg" alt="Andres López - Especialista en Soporte Técnico">
+                        <img src="../Imagenes/AndresLopez.jpg" alt="Andres López - Especialista en Soporte Técnico">
                     </div>
                     <div class="team-info">
                         <h3 class="team-name">Andres Mauricio López</h3>

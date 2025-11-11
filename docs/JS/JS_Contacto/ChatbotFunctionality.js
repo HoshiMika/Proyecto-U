@@ -39,10 +39,6 @@ ChatbotFunctionality.innerHTML = `
     </div>
 </div>
 
-<!-- Botón trigger flotante -->
-<button id="chatbotTrigger" class="chatbot-trigger">
-    <i class="fas fa-robot"></i>
-</button>
 `;
 
 // Agregar la interfaz del chatbot al cuerpo
