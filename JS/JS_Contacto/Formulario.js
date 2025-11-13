@@ -38,37 +38,37 @@ Formulario.innerHTML = `
     <div id="messageContainer"></div>
 `;
 
-// Agregar el formulario al cuerpo
-document.body.appendChild(Formulario);
+    // Agregar el formulario al cuerpo
+    document.body.appendChild(Formulario);
 
-// Función para manejar el envío del formulario
-function initFormHandler() {
-    const contactForm = document.getElementById('contactForm');
-    const messageContainer = document.getElementById('messageContainer');
+    // Función para manejar el envío del formulario
+    function initFormHandler() {
+        const contactForm = document.getElementById('contactForm');
+        const messageContainer = document.getElementById('messageContainer');
     
     // URL de tu API PostgREST
-    const API_URL = 'http://localhost:3001/clientes';
+    const API_URL = 'https://formspree.io/f/mjkjkzoa';
     
-    // Función para enviar datos a la API
+        // Función para enviar datos a Formspree
     async function enviarDatos(datos) {
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(datos)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Error del servidor: ${response.status} - ${response.statusText}`);
-            }
-            
-            return await response.json();
-        } catch (error) {
-            console.error('Error al enviar datos:', error);
-            throw error; // Re-lanzar el error para manejarlo en el caller
+    try {
+        const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+        });
+
+        if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status} - ${response.statusText}`);
         }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error al enviar datos:', error);
+        throw error;
+    }
     }
     
     contactForm.addEventListener('submit', async function(e) {
