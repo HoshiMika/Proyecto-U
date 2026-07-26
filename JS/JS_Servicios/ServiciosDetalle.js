@@ -1,8 +1,14 @@
 // Crear la sección principal de servicios detallados
-const serviciosDetalleSection = document.createElement("section");
-serviciosDetalleSection.className = "services-detail";
+document.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("serviciosDetalle");
 
-serviciosDetalleSection.innerHTML = `
+  if (!contenedor) {
+    console.error("No se encontró el elemento con id='serviciosDetalle'");
+    return;
+  }
+
+  contenedor.innerHTML = `
+  <section class="services-detail">
   <div class="container">
     <h2 class="section-title">Servicios Detallados</h2>
 
@@ -90,7 +96,6 @@ serviciosDetalleSection.innerHTML = `
       </div>
     </div>
   </div>
-`;
-
-// Insertar la sección en el cuerpo del documento o donde necesites
-document.body.appendChild(serviciosDetalleSection);
+  </section>
+  `;
+});

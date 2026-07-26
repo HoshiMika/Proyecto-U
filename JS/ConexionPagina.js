@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <ul class="main-nav">
               <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
               <li><a href="Servicios.html"><i class="fas fa-cogs"></i> Servicios</a></li>
+              <li><a href="Galeria.html"><i class="fas fa-images"></i> Galería</a></li>
               <li><a href="Nosotros.html"><i class="fas fa-users"></i> Nosotros</a></li>
               <li><a href="Contacto.html"><i class="fas fa-phone"></i> Contacto</a></li>
             </ul>

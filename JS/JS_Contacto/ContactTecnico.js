@@ -1,7 +1,13 @@
-const ContactTecnico = document.createElement("div");
-ContactTecnico.className = "info-grid";
+document.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("ContactTecnico");
 
-ContactTecnico.innerHTML = `
+  if (!contenedor) {
+    console.error("No se encontró el elemento con id='ContactTecnico'");
+    return;
+  }
+
+  contenedor.innerHTML = `
+        <div class="info-grid">
             <div class="contact-card">
                 <div class="profile-img">
                     <i class="fas fa-user-tie"></i>
@@ -59,7 +65,5 @@ ContactTecnico.innerHTML = `
                 </div>
             </div>
         </div>
-`;
-
-// Agregarlo al cuerpo o a un contenedor específico
-document.body.appendChild(ContactTecnico);
+  `;
+});

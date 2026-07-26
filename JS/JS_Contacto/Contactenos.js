@@ -1,12 +1,17 @@
-const contactenos = document.createElement("section");
-contactenos.className = "contact-hero";
+document.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("Contactenos");
 
-contactenos.innerHTML = `
-  <div class="container">
-    <h2>Contáctanos</h2>
-    <p>Estamos aquí para ayudarte. Ponte en contacto con nosotros a través del formulario o utilizando cualquiera de nuestros medios de comunicación.</p>
-  </div>
-`;
+  if (!contenedor) {
+    console.error("No se encontró el elemento con id='Contactenos'");
+    return;
+  }
 
-// Agregarlo al cuerpo o a un contenedor específico
-document.body.appendChild(contactenos);
+  contenedor.innerHTML = `
+    <section class="contact-hero">
+      <div class="container">
+        <h2>Contáctanos</h2>
+        <p>Estamos aquí para ayudarte. Ponte en contacto con nosotros a través del formulario o utilizando cualquiera de nuestros medios de comunicación.</p>
+      </div>
+    </section>
+  `;
+});

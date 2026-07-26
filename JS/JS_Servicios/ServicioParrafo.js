@@ -1,12 +1,17 @@
-const servicesHero = document.createElement("section");
-servicesHero.className = "services-hero";
+document.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("ServicioParrafo");
 
-servicesHero.innerHTML = `
-  <div class="container">
-    <h2>Nuestros Servicios</h2>
-    <p>Conozca nuestros servicios tecnológicos, desarrollados para brindar soluciones efectivas que atiendan sus requerimientos específicos.</p>
-  </div>
-`;
+  if (!contenedor) {
+    console.error("No se encontró el elemento con id='ServicioParrafo'");
+    return;
+  }
 
-// Agregarlo al cuerpo o a un contenedor específico
-document.body.appendChild(servicesHero);
+  contenedor.innerHTML = `
+    <section class="services-hero">
+      <div class="container">
+        <h2>Nuestros Servicios</h2>
+        <p>Conozca nuestros servicios tecnológicos, desarrollados para brindar soluciones efectivas que atiendan sus requerimientos específicos.</p>
+      </div>
+    </section>
+  `;
+});
